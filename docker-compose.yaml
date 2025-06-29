@@ -1,0 +1,35 @@
+volumes:
+  decklyvolume:
+    name: deckly-volume
+networks:
+  decklynetwork:
+    name: deckly-network
+services:
+  pg:
+    image: postgres:16
+    restart: on-failure
+    env_file:
+      - .env
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    volumes:
+      - decklyvolume:/var/lib/postgresql/data
+      - ./db/scripts:/docker-entrypoint-initdb.d/
+    networks:
+      - decklynetwork
+  deckly-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    depends_on:
+      - pg
+    volumes:
+      - ./:app
+    ports:
+      - 7777:7777
+    networks:
+      - decklynetwork
+    env_file:
+      - .env
+    entrypoint: ["/bin/bash", "./scripts/entrypoint.dev.sh"]
+
