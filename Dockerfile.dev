@@ -1,6 +1,14 @@
 FROM golang:1.24.4
 WORKDIR /app
+ARG API_PORT=8080
+ENV API_PORT=${API_PORT}
+ENV CGO_ENABLED=0
+ENV GOOS=linux
 COPY ./go.mod ./go.sum ./
 RUN go mod download
+RUN go install github.com/githubnemo/CompileDaemon@latest
 COPY . .
-EXPOSE 7777
+RUN chmod +x ./scripts/entrypoint.dev.sh
+RUN umask 0022
+
+EXPOSE ${API_PORT}

@@ -11,25 +11,35 @@ services:
       - ./db/scripts:/docker-entrypoint-initdb.d/
     networks:
       - decklynetwork
-  deckly-api:
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  deckly_api:
     build:
       context: .
       dockerfile: Dockerfile.dev
+      args:
+        API_PORT: ${API_PORT}
     depends_on:
-      - pg
+      pg:
+        condition: service_healthy
     volumes:
       - ./:/app
     ports:
-      - 7777:7777
+      - "${API_PORT}:${API_PORT}"
     networks:
       - decklynetwork
     env_file:
       - .env
     entrypoint: ["/bin/bash", "./scripts/entrypoint.dev.sh"]
+
 volumes:
   decklyvolume:
     name: deckly-volume
+
 networks:
   decklynetwork:
     name: deckly-network
-

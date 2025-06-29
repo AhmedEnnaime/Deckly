@@ -1,7 +1,16 @@
 #!/bin/bash
-
 set -e
 
-GO111MODULE=off go get github.com/githubnemo/CompileDaemon
+echo "Waiting for database to be ready..."
+sleep 5
 
-CompileDaemon --build="go build -o main cmd/api/main.go" --command=./main
+echo "Migrating dev db"
+go run cmd/dbmigrate/main.go
+
+echo "Migrating test db"
+go run cmd/dbmigrate/main.go -dbName=decklytest
+
+echo "Starting CompileDaemon"
+CompileDaemon \
+  --build="go build -o main cmd/api/main.go" \
+  --command=./main
