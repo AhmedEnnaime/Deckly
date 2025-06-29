@@ -1,9 +1,3 @@
-volumes:
-  decklyvolume:
-    name: deckly-volume
-networks:
-  decklynetwork:
-    name: deckly-network
 services:
   pg:
     image: postgres:16
@@ -24,7 +18,7 @@ services:
     depends_on:
       - pg
     volumes:
-      - ./:app
+      - ./:/app
     ports:
       - 7777:7777
     networks:
@@ -32,4 +26,10 @@ services:
     env_file:
       - .env
     entrypoint: ["/bin/bash", "./scripts/entrypoint.dev.sh"]
+volumes:
+  decklyvolume:
+    name: deckly-volume
+networks:
+  decklynetwork:
+    name: deckly-network
 
