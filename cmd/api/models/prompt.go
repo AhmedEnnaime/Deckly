@@ -23,7 +23,7 @@ func (p *Prompt) Create(ctx context.Context, app *application.Application) error
 }
 
 func (p *Prompt) GetByID(ctx context.Context, app *application.Application) error {
-	stmt := `SELECT * FROM users WHERE id = $1`
+	stmt := `SELECT * FROM prompts WHERE id = $1`
 	err := app.DB.Client.QueryRowContext(ctx, stmt, p.ID).Scan(&p.ID, &p.Subject, &p.Description)
 	if err != nil {
 		return err

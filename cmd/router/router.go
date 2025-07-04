@@ -9,6 +9,6 @@ import (
 
 func Get(app *application.Application) *httprouter.Router {
 	mux := httprouter.New()
-	mux.GET("/prompts", getPrompt.Do(app))
+	mux.GET("/prompts/:id", getPrompt.Do(app))
 	return mux
 }
