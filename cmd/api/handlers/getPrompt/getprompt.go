@@ -4,18 +4,18 @@ import (
 	"database/sql"
 	"deckly/cmd/api/models"
 	"deckly/pkg/application"
-	"deckly/pkg/logger"
 	"deckly/pkg/middlewares"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/google/uuid"
 	"net/http"
+
+	"github.com/google/uuid"
 
 	"github.com/julienschmidt/httprouter"
 )
 
-func getUser(app *application.Application) httprouter.Handle {
+func getPrompt(app *application.Application) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		defer r.Body.Close()
 		id := r.Context().Value(models.CtxKey("promptid"))
@@ -39,10 +39,9 @@ func getUser(app *application.Application) httprouter.Handle {
 }
 
 func Do(app *application.Application) httprouter.Handle {
-	logger.Info.Printf("Sending request to get prompt by id")
 	mdw := []middlewares.Middleware{
 		middlewares.LogRequest,
-		validateRequest,
+		validate,
 	}
-	return middlewares.Chain(getUser(app), mdw...)
+	return middlewares.Chain(getPrompt(app), mdw...)
 }

@@ -10,7 +10,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-func validateRequest(next httprouter.Handle) httprouter.Handle {
+func validate(next httprouter.Handle) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		uidStr := p.ByName("id")
 		uid, err := uuid.Parse(uidStr)
