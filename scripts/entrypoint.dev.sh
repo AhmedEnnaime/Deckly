@@ -10,7 +10,5 @@ go run cmd/dbmigrate/main.go
 echo "Migrating test db"
 go run cmd/dbmigrate/main.go -dbName=decklytest
 
-echo "Starting CompileDaemon"
-CompileDaemon \
-  --build="go build -o main cmd/api/main.go" \
-  --command=./main
+echo "Starting application"
+go run cmd/api/main.go
