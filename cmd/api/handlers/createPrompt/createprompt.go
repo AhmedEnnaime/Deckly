@@ -26,6 +26,12 @@ func CreatePrompt(app *application.Application) httprouter.Handle {
 			fmt.Fprintf(w, "Failed to create prompt")
 			return
 		}
+		go func(p models.Prompt) {
+			if err := p.TriggerN8nWorkflow(app); err != nil {
+				fmt.Println("Failed to trigger n8n:", err)
+			}
+		}(prompt)
+
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
 		json.NewEncoder(w).Encode(prompt)

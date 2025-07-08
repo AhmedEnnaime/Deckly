@@ -7,15 +7,16 @@ import (
 )
 
 type Config struct {
-	dbUser     string
-	dbPassword string
-	dbHost     string
-	dbPort     string
-	dbName     string
-	testDBHost string
-	testDBName string
-	apiPort    string
-	migrate    string
+	dbUser        string
+	dbPassword    string
+	dbHost        string
+	dbPort        string
+	dbName        string
+	testDBHost    string
+	testDBName    string
+	apiPort       string
+	migrate       string
+	n8nWebhookURL string
 }
 
 func Get() *Config {
@@ -30,6 +31,7 @@ func Get() *Config {
 	flag.StringVar(&config.testDBName, "testDBName", os.Getenv("TEST_DB_NAME"), "test DB name")
 	flag.StringVar(&config.apiPort, "apiPort", os.Getenv("API_PORT"), "API Port")
 	flag.StringVar(&config.migrate, "migrate", "up", "specify if we should be migrating DB 'up' or 'down'")
+	flag.StringVar(&config.n8nWebhookURL, "n8nWebhookURL", os.Getenv("N8N_WEBHOOK_URL"), "n8n webhook URL")
 	flag.Parse()
 	return config
 }
@@ -48,6 +50,10 @@ func (c *Config) GetAPIPort() string {
 
 func (c *Config) GetMigration() string {
 	return c.migrate
+}
+
+func (c *Config) GetN8NWebhookURL() string {
+	return c.n8nWebhookURL
 }
 
 func (c *Config) getDBConnStr(dbHost, dbName string) string {

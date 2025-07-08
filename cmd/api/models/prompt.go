@@ -1,8 +1,12 @@
 package models
 
 import (
+	"bytes"
 	"context"
 	"deckly/pkg/application"
+	"encoding/json"
+	"net/http"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -29,4 +33,20 @@ func (p *Prompt) GetByID(ctx context.Context, app *application.Application) erro
 		return err
 	}
 	return nil
+}
+
+func (p *Prompt) TriggerN8nWorkflow(app *application.Application) error {
+	url := app.Cfg.GetN8NWebhookURL()
+	client := &http.Client{Timeout: 5 * time.Second}
+	body, err := json.Marshal(p)
+	if err != nil {
+		return err
+	}
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(body))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", "application/json")
+	_, err = client.Do(req)
+	return err
 }
