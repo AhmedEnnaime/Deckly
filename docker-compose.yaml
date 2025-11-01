@@ -36,12 +36,20 @@ services:
       - .env
     entrypoint: ["/bin/bash", "./scripts/entrypoint.dev.sh"]
   n8n:
-    image: docker.n8n.io/n8nio/n8n
+    build:
+      context: .
+      dockerfile: Dockerfile.n8n
     container_name: n8n
     ports:
       - "5678:5678"
     volumes:
       - n8n_data:/home/node/.n8n
+    environment:
+      - N8N_EXECUTIONS_TIMEOUT=0
+      - N8N_EXECUTIONS_DATA_SAVE_ON_ERROR=all
+      - N8N_EXECUTIONS_DATA_SAVE_ON_SUCCESS=all
+      - N8N_EXECUTIONS_PROCESS=main
+      - N8N_METRICS=true
     networks:
       - decklynetwork
 
